@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/reddit-backend?useSSL=false
+    username: ${MY_DB_USER}
+    password: ${MY_DB_PASSWORD}
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibenate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+
+  mail:
+    host: smtp.mailtrap.io
+    port: 25
+    protocol: smtp
+
+
+#jwt:
+#  expration:
+#    time: 90000
