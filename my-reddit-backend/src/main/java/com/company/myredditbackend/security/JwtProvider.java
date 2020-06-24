@@ -1,10 +1,9 @@
 package com.company.myredditbackend.security;
 
 import com.company.myredditbackend.exceptions.SpringRedditException;
-import com.company.myredditbackend.persistence.model.User;
+import org.springframework.security.core.userdetails.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +20,9 @@ import static java.util.Date.from;
 
 @Service
 public class JwtProvider {
+    private final int EXPIRATIONINMILLIS = 900000;
 
     private KeyStore keyStore;
-    @Value("${jwt.expiration.time}")
-    private Long jwtExpirationInMillis;
 
     @PostConstruct
     public void init() {
@@ -44,7 +42,7 @@ public class JwtProvider {
                 .setSubject(principal.getUsername())
                 .setIssuedAt(from(Instant.now()))
                 .signWith(getPrivateKey())
-                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATIONINMILLIS)))
                 .compact();
     }
 
@@ -53,7 +51,7 @@ public class JwtProvider {
                 .setSubject(username)
                 .setIssuedAt(from(Instant.now()))
                 .signWith(getPrivateKey())
-                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .setExpiration(Date.from(Instant.now().plusMillis(EXPIRATIONINMILLIS)))
                 .compact();
     }
 
@@ -88,7 +86,7 @@ public class JwtProvider {
         return claims.getSubject();
     }
 
-    public Long getJwtExpirationInMillis() {
-        return jwtExpirationInMillis;
+    public int getJwtExpirationInMillis() {
+        return EXPIRATIONINMILLIS;
     }
 }
