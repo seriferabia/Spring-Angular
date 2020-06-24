@@ -1,5 +1,6 @@
 package com.company.myredditbackend.service;
 
+import com.company.myredditbackend.exceptions.SpringRedditException;
 import com.company.myredditbackend.persistence.dto.RegisterRequest;
 import com.company.myredditbackend.persistence.model.NotificationEmail;
 import com.company.myredditbackend.persistence.model.User;
@@ -39,6 +40,23 @@ public class AuthService {
                 "please click on the below url to activate your account : " +
                 "http://localhost:8080/api/auth/accountVerification/" + token);
         mailService.sendMail(email);
+    }
+
+    public void verifyAccount(String token) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token).orElseThrow(() ->
+                new SpringRedditException("Invalid Token"));
+
+        fetchUserAndEnable(verificationToken);
+    }
+
+    @Transactional
+    public void fetchUserAndEnable(VerificationToken verificationToken) {
+        String username = verificationToken.getUser().getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new SpringRedditException("User not found with name: " + username));
+        user.setEnabled(true);
+        userRepository.save(user);
+
     }
 
     private String generateVerificationToken(User user) {
