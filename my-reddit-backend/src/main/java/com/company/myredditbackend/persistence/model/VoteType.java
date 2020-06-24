@@ -1,6 +1,6 @@
 package com.company.myredditbackend.persistence.model;
 
-import com.company.myredditbackend.persistence.exceptions.SpringRedditException;
+import com.company.myredditbackend.exceptions.SpringRedditException;
 
 import java.util.Arrays;
 
