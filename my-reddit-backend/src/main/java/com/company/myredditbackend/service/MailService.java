@@ -19,7 +19,7 @@ public class MailService {
     private final MailContentBuilder mailContentBuilder;
 
     @Async
-    public void sendMail(NotificationEmail notificationEmail){
+    public void sendMail(NotificationEmail notificationEmail) {
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom("myfancyreddit@email.com");
@@ -27,11 +27,11 @@ public class MailService {
             messageHelper.setSubject(notificationEmail.getSubject());
             messageHelper.setText(mailContentBuilder.build(notificationEmail.getBody()));
         };
-        try{
+        try {
             mailSender.send(messagePreparator);
             log.info("Activation email sent!");
-        }catch (MailException e){
-            throw new SpringRedditException("Exception has occured while sending email to " +
+        } catch (MailException e) {
+            throw new SpringRedditException("Exception has occurred while sending email to " +
                     notificationEmail.getRecipient(), e);
         }
     }
