@@ -8,10 +8,10 @@ import com.company.myredditbackend.persistence.model.NotificationEmail;
 import com.company.myredditbackend.persistence.model.Post;
 import com.company.myredditbackend.persistence.model.User;
 import com.company.myredditbackend.persistence.repository.CommentRepository;
-import com.company.myredditbackend.persistence.repository.PostRepository;
 import com.company.myredditbackend.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,14 +23,14 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
-    private final PostRepository postRepository;
+    private final PostService postService;
     private final AuthService authService;
     private final MailContentBuilder mailContentBuilder;
     private final MailService mailService;
     private final UserRepository userRepository;
 
     public CommentDto save(CommentDto commentDto) {
-        Post post = getPostWithId(commentDto.getPostId());
+        Post post = postService.getPostWithId(commentDto.getPostId());
         Comment comment = commentMapper.mapDtoToComment(commentDto, post, authService.getCurrentUser());
         Comment savedComment = commentRepository.save(comment);
 
@@ -40,8 +40,9 @@ public class CommentService {
         return commentMapper.mapToDto(savedComment);
     }
 
+    @Transactional(readOnly = true)
     public List<CommentDto> getCommentsForPost(Long postId) {
-        Post post = getPostWithId(postId);
+        Post post = postService.getPostWithId(postId);
         return commentRepository.findAllByPost(post)
                 .stream()
                 .map(commentMapper::mapToDto)
@@ -49,6 +50,7 @@ public class CommentService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<CommentDto> getCommentsByUser(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new SpringRedditException("User not Found! Invalid username : " + username));
@@ -62,8 +64,4 @@ public class CommentService {
         mailService.sendMail(new NotificationEmail("Commented on your post!", user.getEmail(), message));
     }
 
-    private Post getPostWithId(Long postId) {
-        return postRepository.findById(postId).orElseThrow(() -> new SpringRedditException(
-                "Post not Found! Invalid post id : " + postId));
-    }
 }

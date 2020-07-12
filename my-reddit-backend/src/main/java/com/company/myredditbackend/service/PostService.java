@@ -10,7 +10,6 @@ import com.company.myredditbackend.persistence.model.User;
 import com.company.myredditbackend.persistence.repository.PostRepository;
 import com.company.myredditbackend.persistence.repository.SubredditRepository;
 import com.company.myredditbackend.persistence.repository.UserRepository;
-import javafx.geometry.Pos;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +38,7 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts(){
+    public List<PostResponse> getAllPosts() {
         return postRepository.findAll()
                 .stream()
                 .map(postMapper::mapPostToResponse)
@@ -47,14 +46,14 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostResponse getPost(Long id){
+    public PostResponse getPost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new SpringRedditException("Invalid id"));
         return postMapper.mapPostToResponse(post);
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostsBySubreddit(Long subredditId){
+    public List<PostResponse> getPostsBySubreddit(Long subredditId) {
         Subreddit subreddit = subredditRepository.findById(subredditId)
                 .orElseThrow(() -> new SpringRedditException("Invalid subreddit id!"));
 
@@ -66,12 +65,18 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostsByUsername(String username){
+    public List<PostResponse> getPostsByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new SpringRedditException("Invalid username " + username));
         return postRepository.findByUser(user)
                 .stream()
                 .map(postMapper::mapPostToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Post getPostWithId(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new SpringRedditException(
+                "Post not Found! Invalid post id : " + postId));
     }
 }
