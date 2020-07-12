@@ -1,6 +1,6 @@
 package com.company.myredditbackend.mapper;
 
-import com.company.myredditbackend.persistence.dto.SubredditDTO;
+import com.company.myredditbackend.persistence.dto.SubredditDto;
 import com.company.myredditbackend.persistence.model.Post;
 import com.company.myredditbackend.persistence.model.Subreddit;
 import org.mapstruct.InheritInverseConfiguration;
@@ -13,7 +13,7 @@ import java.util.List;
 public interface SubredditMapper {
 
     @Mapping(target = "numberOfPosts", expression = "java(mapPostsNumber(subreddit.getPosts()))")
-    SubredditDTO mapSubredditToDto(Subreddit subreddit);
+    SubredditDto mapSubredditToDto(Subreddit subreddit);
 
     default Integer mapPostsNumber(List<Post> posts) {
         return posts.size();
@@ -21,5 +21,5 @@ public interface SubredditMapper {
 
     @InheritInverseConfiguration
     @Mapping(target = "posts", ignore = true)
-    Subreddit mapDtoToSubreddit(SubredditDTO subredditDTO);
+    Subreddit mapDtoToSubreddit(SubredditDto subredditDTO);
 }

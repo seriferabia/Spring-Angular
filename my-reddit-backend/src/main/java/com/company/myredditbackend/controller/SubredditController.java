@@ -1,6 +1,6 @@
 package com.company.myredditbackend.controller;
 
-import com.company.myredditbackend.persistence.dto.SubredditDTO;
+import com.company.myredditbackend.persistence.dto.SubredditDto;
 import com.company.myredditbackend.service.SubredditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,21 +18,21 @@ public class SubredditController {
     private final SubredditService subredditService;
 
     @PostMapping
-    public ResponseEntity<SubredditDTO> createSubreddit(@RequestBody SubredditDTO subredditDTO) {
+    public ResponseEntity<SubredditDto> createSubreddit(@RequestBody SubredditDto subredditDTO) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(subredditService.save(subredditDTO));
     }
 
     @GetMapping
-    public ResponseEntity<List<SubredditDTO>> getAllSubreddits() {
+    public ResponseEntity<List<SubredditDto>> getAllSubreddits() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(subredditService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SubredditDTO> getSubredditById(@PathVariable Long id){
+    public ResponseEntity<SubredditDto> getSubredditById(@PathVariable Long id){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(subredditService.getById(id));
