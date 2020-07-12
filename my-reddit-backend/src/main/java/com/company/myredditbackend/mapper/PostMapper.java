@@ -12,11 +12,11 @@ import org.mapstruct.Mappings;
 @Mapper(componentModel = "spring")
 public interface PostMapper {
     @Mappings({
-            @Mapping(expression = "java(java.time.Instant.now())", target = "createdDate"),
-            @Mapping(source = "postRequest.description", target = "description"),
-            @Mapping(source = "postRequest.postId", target = "id"),
-            @Mapping(source = "subreddit", target = "subreddit"),
-            @Mapping(source = "user", target = "user"),
+            @Mapping(target = "createdDate", expression = "java(java.time.Instant.now())"),
+            @Mapping(target = "postRequest.description", source = "description"),
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "subreddit", source = "subreddit"),
+            @Mapping(target = "user", source = "user"),
 
     })
     Post mapRequestToPost(PostRequest postRequest, Subreddit subreddit, User user);
