@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {SubredditModel} from './subreddit-response';
-import {identity, Observable} from 'rxjs';
-import {Encoding} from 'tslint/lib/utils';
+import {Observable} from 'rxjs';
 
 
 
