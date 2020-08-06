@@ -17,4 +17,8 @@ export class CommentService {
   getAllCommentsForPost(postId: number): Observable<CommentPayload[]> {
     return this.httpClient.get<CommentPayload[]>('http://localhost:8080/api/comments/by-postId/' + postId);
   }
+
+  getAllCommentsByUser(name: string) {
+    return this.httpClient.get<CommentPayload[]>('http://localhost:8080/api/comments/by-username/' + name);
+  }
 }
