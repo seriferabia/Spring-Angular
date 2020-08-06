@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PostService} from '../../shared/post.service';
 import {PostModel} from '../../shared/post-model';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -38,7 +38,7 @@ export class ViewPostComponent implements OnInit {
     this.getCommentsForPost();
   }
 
-  postComment(){
+  postComment() {
     this.commentPayload.text = this.commentForm.get('text').value;
     this.commentService.postComment(this.commentPayload).subscribe(data => {
       this.commentForm.get('text').setValue('');
@@ -48,7 +48,7 @@ export class ViewPostComponent implements OnInit {
     });
   }
 
-  private getPostById(){
+  private getPostById() {
     this.postService.getPost(this.postId).subscribe(data => {
       this.post = data;
     }, error => {
