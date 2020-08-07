@@ -14,6 +14,7 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
 @Slf4j
@@ -47,7 +48,7 @@ public class PostController {
     }
 
     @GetMapping("/by-username/{username}")
-    public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@PathVariable String username){
+    public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable String username){
         return status(HttpStatus.OK)
                 .body(postService.getPostsByUsername(username));
     }
