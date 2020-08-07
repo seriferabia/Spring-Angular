@@ -2,9 +2,7 @@ package com.company.myredditbackend.mapper;
 
 import com.company.myredditbackend.persistence.dto.PostRequest;
 import com.company.myredditbackend.persistence.dto.PostResponse;
-import com.company.myredditbackend.persistence.model.Post;
-import com.company.myredditbackend.persistence.model.Subreddit;
-import com.company.myredditbackend.persistence.model.User;
+import com.company.myredditbackend.persistence.model.*;
 import com.company.myredditbackend.persistence.repository.CommentRepository;
 import com.company.myredditbackend.persistence.repository.VoteRepository;
 import com.company.myredditbackend.service.AuthService;
@@ -13,6 +11,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
+
+import static com.company.myredditbackend.persistence.model.VoteType.DOWNVOTE;
+import static com.company.myredditbackend.persistence.model.VoteType.UPVOTE;
 
 @Mapper(componentModel = "spring")
 public abstract class PostMapper {
@@ -29,7 +32,7 @@ public abstract class PostMapper {
             @Mapping(target = "description", source = "postRequest.description"),
             @Mapping(target = "subreddit", source = "subreddit"),
             @Mapping(target = "user", source = "user"),
-            @Mapping(target = "voteCounter", constant = "0")
+            @Mapping(target = "voteCounter", constant = "0"),
 
     })
     public abstract Post mapRequestToPost(PostRequest postRequest, Subreddit subreddit, User user);
@@ -38,7 +41,9 @@ public abstract class PostMapper {
             @Mapping(target = "userName", source = "user.username"),
             @Mapping(target = "subredditName", source = "subreddit.name"),
             @Mapping(target = "commentCounter", expression = "java(commentCount(post))"),
-            @Mapping(target = "duration", expression = "java(getDuration(post))")
+            @Mapping(target = "duration", expression = "java(getDuration(post))"),
+            @Mapping(target = "upVote", expression = "java(isPostUpVoted(post))"),
+            @Mapping(target = "downVote", expression = "java(isPostDownVoted(post))")
     })
     public abstract PostResponse mapPostToResponse(Post post);
 
@@ -49,4 +54,25 @@ public abstract class PostMapper {
     String getDuration(Post post) {
         return TimeAgo.using(post.getCreatedDate().toEpochMilli());
     }
+
+    boolean isPostUpVoted(Post post) {
+        return checkVoteType(post, UPVOTE);
+    }
+
+    boolean isPostDownVoted(Post post) {
+        return checkVoteType(post, DOWNVOTE);
+    }
+
+    private boolean checkVoteType(Post post, VoteType voteType) {
+        if (authService.isLoggedIn()) {
+            Optional<Vote> voteForPostByUser =
+                    voteRepository.findTopByPostAndUserOrderByVoteIdDesc(post,
+                            authService.getCurrentUser());
+            return voteForPostByUser.filter(vote -> vote.getVoteType().equals(voteType))
+                    .isPresent();
+        }
+        return false;
+    }
+
+
 }
