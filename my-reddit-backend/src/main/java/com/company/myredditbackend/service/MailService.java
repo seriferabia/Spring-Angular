@@ -20,6 +20,8 @@ public class MailService {
 
     @Async
     public void sendMail(NotificationEmail notificationEmail) {
+        System.setProperty("java.net.preferIPv4Stack", "true");
+
         MimeMessagePreparator messagePreparator = mimeMessage -> {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
             messageHelper.setFrom("myfancyreddit@email.com");
