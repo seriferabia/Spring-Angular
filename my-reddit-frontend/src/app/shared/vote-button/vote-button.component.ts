@@ -37,11 +37,13 @@ export class VoteButtonComponent implements OnInit {
   upvotePost() {
     this.votePayload.voteType = VoteType.UPVOTE;
     this.vote();
+    console.log('upvote: ' + this.post.voteCounter);
   }
 
   downvotePost() {
     this.votePayload.voteType = VoteType.DOWNVOTE;
     this.vote();
+    console.log('downvote: '  + this.post.id + '-' + this.post.voteCounter);
   }
 
   private vote() {
@@ -56,7 +58,8 @@ export class VoteButtonComponent implements OnInit {
   }
 
   private updateVoteDetails() {
-    this.postService.getPost(this.post.id).subscribe(post =>{
+    this.postService.getPost(this.post.id).subscribe(post => {
+      console.log('backend post : ' +  post.voteCounter + '-' + post.id)
       this.post = post;
     });
   }
